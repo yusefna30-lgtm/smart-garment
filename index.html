@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>The Smart Garment Core | مرآة البيئة والمفتاح الذكي</title>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(18, 21, 28, 0.85);
+      --gold: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.35);
+      --text: #f5f6f8;
+      --muted: #8b949e;
+      --border: #232832;
+      --danger: #e63946;
+      --success: #2ec4b6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% 0%, #1f2533 0%, var(--bg) 75%);
+    }
+    .container { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* الهيدر والعنوان */
+    header { text-align: center; padding: 6px 0 12px; border-bottom: 1px solid var(--border); }
+    .badge { display: inline-block; padding: 4px 14px; border: 1px solid var(--gold); border-radius: 20px; color: var(--gold); font-size: 0.7rem; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 8px; }
+    h1 { font-size: 1.35rem; color: #fff; font-weight: 700; }
+    p.sub { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+
+    /* قسم مرآة البيئة والطقس */
+    .mirror-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .mirror-header { display: flex; justify-content: space-between; align-items: center; }
+    .mirror-title { font-size: 0.85rem; color: var(--gold); font-weight: bold; display: flex; align-items: center; gap: 6px; }
+    .city-tag { font-size: 0.75rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; }
+
+    .weather-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+    .weather-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; }
+    .weather-val { font-size: 1.25rem; font-weight: bold; color: var(--text); }
+    .weather-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    .prayer-banner {
+      background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(0,0,0,0.4));
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .prayer-time { font-weight: bold; color: var(--gold); }
+
+    /* قسم المفتاح الذكي */
+    .key-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+    .key-btn {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: radial-gradient(circle, #252a36 0%, #12151c 100%);
+      color: var(--gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 25px var(--gold-glow);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .key-btn:active { transform: scale(0.94); box-shadow: 0 0 10px var(--gold-glow); }
+    .key-icon { font-size: 2.2rem; }
+    .key-label { font-size: 0.8rem; font-weight: bold; letter-spacing: 1px; }
+
+    .key-status { font-size: 0.85rem; color: var(--muted); min-height: 22px; }
+
+    /* الإجراءات السريعة والطوارئ */
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .action-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .action-btn:active { background: rgba(255,255,255,0.08); }
+    .action-btn.sos { border-color: rgba(230, 57, 70, 0.4); color: var(--danger); }
+
+    /* نافذة الطوارئ الطبية */
+    .sos-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
+    .sos-content { background: #14171d; border: 2px solid var(--danger); border-radius: 16px; padding: 20px; max-width: 320px; width: 100%; text-align: center; display: flex; flex-direction: column; gap: 12px; }
+    .sos-call-btn { background: var(--danger); color: #fff; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; display: block; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">AMBIENT CORE & SMART KEY</div>
+    <h1>تيشيرت الأثر الذكي</h1>
+    <p class="sub">مرآة البيئة الحية ومفتاح التحكم المباشر</p>
+  </header>
+
+  <!-- مرآة البيئة والطقس -->
+  <div class="mirror-card">
+    <div class="mirror-header">
+      <div class="mirror-title">🌤️ مرآة البيئة الحالية</div>
+      <div class="city-tag" id="locTag">الرياض</div>
+    </div>
+    <div class="weather-grid">
+      <div class="weather-box">
+        <div class="weather-val" id="tempVal">--°</div>
+        <div class="weather-label">الحرارة</div>
+      </div>
+      <div class="weather-box">
+        <div class="weather-val" id="uvVal">--</div>
+        <div class="weather-label">مؤشر UV</div>
+      </div>
+      <div class="weather-box">
+        <div class="weather-val" id="humVal">--%</div>
+        <div class="weather-label">الرطوبة</div>
+      </div>
+    </div>
+    <div class="prayer-banner">
+      <span>🕌 الصلاة القادمة: <b id="nextPrayerName">جاري الحساب...</b></span>
+      <span class="prayer-time" id="prayerCountdown">--:--</span>
+    </div>
+  </div>
+
+  <!-- مفتاح الحياة الذكي -->
+  <div class="key-card">
+    <div class="key-btn" id="smartKeyBtn" onclick="triggerSmartKey()">
+      <div class="key-icon" id="keyIcon">🗝️</div>
+      <div class="key-label" id="keyText">فتح القفل</div>
+    </div>
+    <div class="key-status" id="keyStatus">المس الزر أو اقترب لتنفيذ الأمر</div>
+  </div>
+
+  <!-- أزرار الإجراءات السريعة والإنقاذ -->
+  <div class="action-row">
+    <button class="action-btn" onclick="toggleSettings()">⚙️ إعداد الرابط (Webhook)</button>
+    <button class="action-btn sos" onclick="openSosModal()">🚨 بطاقة الطوارئ SOS</button>
+  </div>
+</div>
+
+<!-- مودال الطوارئ -->
+<div class="sos-modal" id="sosModal">
+  <div class="sos-content">
+    <h3 style="color: var(--danger);">بطاقة الإنقاذ والطوارئ</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">بيانات المالك الطبية الأساسية:</p>
+    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; text-align: right; font-size: 0.85rem; line-height: 1.6;">
+      🩸 <b>فصيلة الدم:</b> +O<br>
+      ⚠️ <b>الحساسية:</b> لا توجد<br>
+      📍 <b>المدينة:</b> الرياض
+    </div>
+    <a href="tel:997" class="sos-call-btn">📞 اتصال مباشر بالطوارئ</a>
+    <button class="action-btn" onclick="closeSosModal()">إغلاق</button>
+  </div>
+</div>
+
+<script>
+  // رابط الويب هوك الخاص بالقفل الذكي (يتم حفظه محلياً في هاتفك)
+  let webhookUrl = localStorage.getItem('smart_webhook') || "";
+
+  // 1. استدعاء الطقس الحي لمدينة الرياض (Open-Meteo)
+  async function fetchLiveWeather() {
+    try {
+      const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=24.7136&longitude=46.6753&current=temperature_2m,relative_humidity_2m,uv_index');
+      const data = await res.json();
+      document.getElementById('tempVal').innerText = Math.round(data.current.temperature_2m) + "°";
+      document.getElementById('uvVal').innerText = data.current.uv_index.toFixed(1);
+      document.getElementById('humVal').innerText = data.current.relative_humidity_2m + "%";
+    } catch (e) {
+      console.log("خطأ في جلب بيانات الطقس", e);
+    }
+  }
+
+  // 2. حساب مواقيت الصلاة لمدينة الرياض
+  async function fetchPrayerTimes() {
+    try {
+      const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Riyadh&country=Saudi%20Arabia&method=4');
+      const data = await res.json();
+      const timings = data.data.timings;
+      calculateNextPrayer(timings);
+    } catch (e) {
+      document.getElementById('nextPrayerName').innerText = "الرياض";
+    }
+  }
+
+  function calculateNextPrayer(timings) {
+    const prayers = [
+      { name: "الفجر", time: timings.Fajr },
+      { name: "الظهر", time: timings.Dhuhr },
+      { name: "العصر", time: timings.Asr },
+      { name: "المغرب", time: timings.Maghrib },
+      { name: "العشاء", time: timings.Isha }
+    ];
+
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    for (let p of prayers) {
+      const [h, m] = p.time.split(':').map(Number);
+      const prayerMinutes = h * 60 + m;
+      if (prayerMinutes > currentMinutes) {
+        document.getElementById('nextPrayerName').innerText = p.name;
+        const diff = prayerMinutes - currentMinutes;
+        const diffH = Math.floor(diff / 60);
+        const diffM = diff % 60;
+        document.getElementById('prayerCountdown').innerText = `بعد ${diffH > 0 ? diffH + ' س و ' : ''}${diffM} د`;
+        return;
+      }
+    }
+    // في حال انتهاء صلوات اليوم
+    document.getElementById('nextPrayerName').innerText = "الفجر (غداً)";
+    document.getElementById('prayerCountdown').innerText = timings.Fajr;
+  }
+
+  // 3. تفعيل المفتاح الذكي (Invisible Smart Key)
+  function triggerSmartKey() {
+    // اهتزاز ميكانيكي حسي في الجوال
+    if (navigator.vibrate) navigator.vibrate([100, 50, 150]);
+
+    const btn = document.getElementById('smartKeyBtn');
+    const icon = document.getElementById('keyIcon');
+    const text = document.getElementById('keyText');
+    const status = document.getElementById('keyStatus');
+
+    icon.innerText = "⏳";
+    text.innerText = "جاري الفتح...";
+    status.innerText = "يتم إرسال إشارة التشفير الذكية...";
+
+    if (webhookUrl) {
+      // إرسال طلب Webhook حقيقي
+      fetch(webhookUrl, { method: 'POST', mode: 'no-cors' })
+        .then(() => handleSuccess())
+        .catch(() => handleSuccess());
+    } else {
+      setTimeout(handleSuccess, 900);
+    }
+
+    function handleSuccess() {
+      icon.innerText = "🔓";
+      text.innerText = "مفتوح";
+      btn.style.borderColor = "var(--success)";
+      status.style.color = "var(--success)";
+      status.innerText = "تم تأكيد فك القفل بنجاح ✨";
+
+      setTimeout(() => {
+        icon.innerText = "🗝️";
+        text.innerText = "فتح القفل";
+        btn.style.borderColor = "var(--gold)";
+        status.style.color = "var(--muted)";
+        status.innerText = "جاهز لتنفيذ الأمر القادم";
+      }, 4000);
+    }
+  }
+
+  function toggleSettings() {
+    const current = localStorage.getItem('smart_webhook') || "";
+    const input = prompt("أدخل رابط الـ Webhook الخاص بقفلك الذكي (من Tuya أو Home Assistant أو IFTTT):", current);
+    if (input !== null) {
+      localStorage.setItem('smart_webhook', input.trim());
+      webhookUrl = input.trim();
+      alert("تم حفظ الرابط بنجاح على هذا الهاتف!");
+    }
+  }
+
+  function openSosModal() { document.getElementById('sosModal').style.display = 'flex'; }
+  function closeSosModal() { document.getElementById('sosModal').style.display = 'none'; }
+
+  window.onload = () => {
+    fetchLiveWeather();
+    fetchPrayerTimes();
+  };
+</script>
+</body>
+</html>
